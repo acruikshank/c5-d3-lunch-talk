@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Solar System</title>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <style type="text/css">
+
+      table { width: 500px; margin: 40px auto; font-family:helvetica; color: #333;  }
+      thead th { font-weight: normal; font-size: 1.1em; }
+      tbody td { background-color: #ddd; padding: 4px 10px;}
+
+    </style>
+  </head>
+  <body>
+    <div id="solar-system"></div>
+    <script type="text/javascript">
+
+  var objects = [
+    { body:'Sun', size:695000, distance:0 },
+    { body:'Mercury', size:2440, distance:57910 },
+    { body:'Venus', size:6052, distance:108200 },
+    { body:'Earth', size:6378, distance:149600 },
+    { body:'Mars', size:3397, distance:227940 },
+    { body:'Jupiter', size:71492, distance:778330 },
+    { body:'Saturn', size:60268, distance:1429400 },
+    { body:'Uranus', size:25559, distance:2870990 },
+    { body:'Neptune', size:24766, distance:4504300 },
+    { body:'Pluto', size:1150, distance:5913520 }
+  ]
+
+  var commaFormat = d3.format(',');
+  var units = { size:'kg', distance:'km' }
+  var keys = d3.keys(objects[0]);
+
+  var table = d3.select("#solar-system").append("table");
+  table.append('thead').append('tr').selectAll('th')
+    .data( keys )
+    .enter()
+      .append("th").html(function(d) { return units[d] ? d + ' ('+units[d]+')' : d; });
+
+  table.append('tbody')
+    .selectAll('tr').data( objects )
+    .enter()
+      .append('tr')
+        .selectAll('td').data( function(d) { return d3.entries(d) })
+        .enter()
+          .append('td').html(function(d) { return d.key == 'size' ? commaFormat(d.value*1000) : d.value; });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blog Stats</title>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <style type="text/css">
+
+      #chart { width: 900px; margin:30px auto;}
+      text { font-family: helvetica; font-size: 16px; color: #333;}
+      path.selected { stroke:#39f; stroke-width:2px; }
+
+    </style>
+  </head>
+  <body>
+    <div id="chart"></div>
+    <script type="text/javascript">
+
+var stats = [
+{"name":"Supporting Cross-Domain AJAX in Rails using JSONP and CORS","data":[19,17,21,22,23,12,10,14,16,21,26,11,10,7,23,27,15,23,15,7,9,13,17,20,19,16,5,4,14,16,19,24,13,6,9,23,22,0]},
+{"name":"Does My Rails App Need a Service Layer?","data":[15,12,7,12,11,2,5,13,12,10,13,5,5,6,9,11,5,6,5,9,4,23,8,5,5,10,0,7,8,13,16,14,14,1,6,9,23,0]},
+
+{"name":"How to Test External APIs","data":[22,29,23,15,23,18,10,15,15,19,18,10,3,6,12,11,9,11,18,1,6,10,16,13,15,11,4,3,15,11,8,12,14,7,14,8,15,0]},
+{"name":"Configuration for Rails, the Right Way","data":[13,12,7,17,12,6,6,8,18,12,16,5,8,10,11,4,18,18,18,7,14,12,14,15,11,11,9,12,5,16,15,19,8,4,10,9,17,0]},
+{"name":"Improving Resque’s memory efficiency","data":[15,14,6,14,10,2,3,13,4,3,12,14,6,17,14,9,5,13,21,8,2,12,8,4,10,27,4,7,17,12,13,25,9,3,9,19,16,0]},
+{"name":"Code Formatting in Xcode","data":[4,9,13,15,7,10,10,7,22,13,11,10,13,10,9,12,22,13,14,3,3,17,20,11,9,11,11,7,10,10,7,5,17,11,9,16,13,0]},
+{"name":"Fixture data for iOS tests","data":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,30,13,5,3,1,1,44,5,0]},
+{"name":"Beginning Outside-In Rails Development with Cucumber and RSpec","data":[23,15,15,19,10,8,9,13,21,22,10,6,4,7,11,9,14,13,9,6,10,7,5,6,9,8,12,10,12,5,14,14,9,6,10,13,11,0]},
+{"name":"Deploying node.js on Amazon EC2","data":[12,15,12,12,14,11,8,15,12,8,18,10,6,10,14,11,6,11,8,7,4,11,11,8,15,11,3,12,15,12,9,9,14,8,10,15,10,0]},
+{"name":"Testing iPhone View Controllers","data":[24,14,9,18,14,7,7,6,8,18,17,17,2,6,26,12,22,16,8,2,2,16,19,10,9,11,7,10,20,22,10,10,15,2,11,14,12,0]},
+{"name":"Pragmatic JavaScript Testing with Jasmine","data":[12,26,14,24,11,6,10,22,15,19,20,7,7,16,23,20,12,17,14,10,6,16,11,7,13,14,9,15,20,17,15,12,6,3,6,12,17,0]},
+{"name":"Exploring Client-side MVC with Backbone.js","data":[4,5,8,10,7,5,5,5,5,4,9,3,3,8,4,12,4,5,5,3,7,7,6,3,1,4,1,4,9,10,17,11,13,2,9,7,6,0]},
+{"name":"Instagram Realtime Demo with Node.js, Redis and Web Sockets","data":[12,7,18,17,10,10,7,12,13,3,11,4,6,8,11,14,21,6,5,2,4,13,8,12,8,11,5,8,11,17,14,5,13,6,8,9,9,0]},
+{"name":"Using classpath*: vs. classpath: when loading Spring resources.","data":[13,9,10,13,8,1,2,10,12,19,15,8,3,6,9,7,17,9,14,1,4,10,17,9,14,9,3,0,16,12,10,12,11,3,5,11,13,0]},
+{"name":"A Look at Specifying Views in RSpec","data":[5,4,2,4,1,2,1,8,4,3,11,4,2,6,6,8,5,5,3,3,2,8,7,1,5,5,4,2,5,2,30,14,6,2,3,2,4,0]},
+{"name":"Getting “Test”-y in iOS Apps: Test-Driven Development and Automated Deployment","data":[7,6,12,7,7,3,1,3,7,9,6,12,11,12,18,13,7,14,3,5,4,5,7,6,6,5,3,8,17,11,5,11,7,6,6,12,7,0]},
+{"name":"Managing iOS Configurations per Environment in Xcode 4","data":[8,10,7,12,10,1,2,8,13,10,15,10,1,6,15,5,15,5,4,1,5,7,10,7,13,3,2,6,5,6,11,11,9,1,1,9,10,0]},
+{"name":"Resizing UILabel to fit text","data":[4,10,4,9,4,4,6,7,8,9,2,4,1,2,15,9,4,7,11,2,6,12,9,3,8,4,5,3,7,6,3,7,12,2,4,9,12,0]},
+{"name":"Speedy Test Iterations for Rails 3 with Spork and Guard","data":[14,15,7,26,6,5,5,13,17,10,16,10,3,3,4,6,10,11,13,11,6,8,16,11,2,10,4,5,9,10,9,9,3,0,1,8,10,0]},
+{"name":"Custom Xcode Templates for iPhone Development","data":[9,8,8,7,5,2,2,10,12,8,3,2,1,3,10,9,6,4,1,3,0,2,8,3,3,0,3,4,5,15,2,7,3,6,2,7,11,0]},
+{"name":"Interactivity in HTML5 Canvas Visualizations","data":[2,6,3,5,1,2,3,3,4,11,2,4,3,3,11,11,4,7,9,1,0,6,3,6,8,3,0,0,27,2,5,9,5,1,3,12,4,0]},
+{"name":"Taming 2D Transforms in HTML5 Canvas","data":[4,6,0,7,3,5,0,7,5,8,13,5,1,1,8,4,2,8,15,0,3,5,1,7,2,0,0,1,10,7,9,2,9,5,4,1,8,0]},
+{"name":"Debug logging with Xcode 4 breakpoints","data":[7,8,10,5,8,3,2,2,4,4,5,6,3,3,1,9,5,6,3,5,4,2,5,8,9,4,1,4,3,1,8,7,3,1,3,7,5,0]},
+{"name":"Monkey-Patching iOS with Objective-C Categories Part I: Simple Extensions and Overrides","data":[3,1,4,4,2,1,3,5,4,8,7,5,2,3,6,8,4,11,9,9,0,3,3,6,7,4,5,4,6,9,8,3,6,2,4,7,3,0]},
+{"name":"Configuring applications with Spring","data":[2,7,7,3,4,2,2,7,4,15,8,3,1,1,3,8,8,1,1,0,1,9,3,6,8,7,0,3,3,9,2,9,2,0,2,9,9,0]},
+{"name":"UIView Frames and Bounds","data":[0,4,7,1,1,7,6,3,5,4,2,4,2,6,4,6,4,6,2,2,3,5,4,6,8,8,6,4,3,4,7,5,8,2,0,5,4,0]},
+{"name":"Virtual Environments with Vagrant","data":[1,2,7,3,4,3,3,5,5,4,3,7,1,2,7,10,6,6,6,2,3,2,4,3,3,5,4,2,7,2,5,6,3,4,4,4,5,0]},
+{"name":"UX Recipe: Developer Wireframe Walkthrough","data":[2,21,8,7,2,0,1,5,2,1,3,3,1,1,5,1,2,4,4,4,4,5,5,3,3,0,0,0,4,3,5,4,10,1,3,2,4,0]},
+{"name":"Automating Node.js deployment to EC2 with Chef","data":[8,6,5,5,7,10,1,4,9,1,3,2,1,3,2,5,5,11,5,3,2,11,18,3,10,6,0,4,3,7,3,6,3,6,3,7,3,0]},
+{"name":"Asynchronous Processing with girl_friday","data":[3,5,1,4,3,0,3,2,3,5,3,1,2,1,3,4,1,2,3,2,3,2,1,2,5,3,0,5,2,6,5,1,8,1,4,2,5,0]},
+{"name":"iPhone Unit Testing Toolkit","data":[4,1,4,5,1,1,1,4,3,4,9,8,3,3,8,9,2,3,5,3,1,1,2,0,6,2,5,3,4,2,5,5,6,2,0,4,8,0]},
+{"name":"A Modern Guide to Threads","data":[5,6,1,2,2,0,1,0,2,1,1,0,3,1,1,1,17,1,2,3,2,0,4,4,9,5,3,3,5,1,2,3,3,1,3,6,8,0]},
+{"name":"Database Testing with Spring 2.5 and DBUnit","data":[7,3,4,1,6,1,1,0,2,2,2,6,0,0,5,1,2,10,6,1,0,0,1,3,2,1,3,1,4,1,2,2,4,0,1,7,8,0]},
+{"name":"Continuous integration for iPhone projects in TeamCity","data":[2,1,0,4,3,0,1,6,2,0,0,2,4,2,4,2,4,3,8,0,3,3,4,4,4,4,1,1,8,2,6,0,5,1,1,9,4,0]},
+{"name":"How to install rails on CentOS 5.4 x64","data":[6,2,3,1,0,4,3,4,8,1,1,5,2,3,2,1,3,4,3,1,2,3,4,0,2,3,0,0,3,0,2,2,2,2,1,5,8,0]},
+{"name":"Raking and Testing with EventMachine","data":[3,2,5,4,4,6,1,3,4,1,4,1,2,2,5,7,3,1,0,4,2,1,1,0,0,4,1,1,2,0,2,9,1,0,1,2,6,0]},
+{"name":"Better Mocking in Ruby","data":[3,1,7,2,1,1,1,1,4,3,5,1,1,2,5,4,2,2,0,0,4,4,2,2,4,3,3,2,7,1,2,4,1,2,2,5,5,0]},
+{"name":"Rails 3 Upgrade Tip: Invalidate Session Cookies","data":[5,1,3,6,5,2,2,6,7,9,3,0,4,0,3,2,11,7,5,1,1,6,3,0,4,3,2,3,1,6,3,3,4,5,0,3,1,0]},
+{"name":"Think Globally, Stage Locally","data":[0,4,0,2,1,3,1,1,1,1,1,2,1,4,1,6,0,1,0,0,2,3,4,5,3,0,1,1,0,2,0,3,1,5,5,4,1,0]},
+{"name":"Story Mapper is Release Planning for Pivotal Tracker","data":[0,0,2,2,0,0,0,0,0,0,1,3,1,0,1,0,1,1,0,1,0,0,0,1,0,1,1,0,0,0,2,2,0,5,0,6,3,0]},
+{"name":"Design Thinking Bootcamp Experience Report","data":[4,0,1,4,3,0,2,4,2,0,0,1,0,0,2,0,1,3,0,0,1,1,0,0,1,1,1,1,3,0,0,2,2,5,1,1,8,0]},
+{"name":"Generating realistic-looking stories in Pivotal Tracker","data":[1,2,3,5,1,0,1,2,4,5,1,5,0,3,0,0,2,3,0,1,2,2,7,5,4,8,3,4,5,8,6,1,2,2,2,3,2,0]},
+{"name":"Up and Running with Clojure","data":[1,3,1,2,4,0,4,2,1,2,0,1,0,2,2,4,5,4,0,1,2,1,1,3,1,7,5,1,4,3,6,1,3,1,3,0,2,0]},
+{"name":"A 3D Flocking Simulation using HTML5 Canvas","data":[6,8,3,6,4,1,0,0,7,0,1,5,0,3,2,4,0,6,3,0,0,2,1,2,0,0,1,0,3,4,2,6,2,2,0,4,0,0]},
+{"name":"Custom Constraints for OCMock","data":[2,3,2,2,3,0,1,1,2,3,7,3,6,1,6,4,1,5,5,3,1,3,3,1,6,1,0,0,8,3,1,4,6,1,0,4,0,0]},
+{"name":"Gem Development Best Practices","data":[3,3,4,1,2,0,2,4,4,2,1,2,1,0,1,1,0,0,1,1,0,0,3,2,0,1,2,0,1,2,2,2,2,0,1,4,5,0]},
+{"name":"Node.js, Part III: Full Stack Application","data":[1,7,4,0,2,1,3,4,5,6,6,4,1,2,1,5,1,3,0,1,0,2,2,1,3,0,5,1,2,7,1,0,1,1,4,7,2,0]},
+{"name":"There’s a (Vim Plugin) for That! Part I: Fuzzy Finder","data":[0,6,7,3,1,1,2,4,5,5,0,3,1,0,1,4,0,2,4,1,1,1,3,0,2,2,1,3,7,1,7,0,0,1,0,4,2,0]},
+{"name":"Multithreaded Testing","data":[4,2,2,4,4,0,1,5,3,1,4,2,0,2,2,0,2,2,2,0,0,1,0,0,3,3,0,0,1,5,1,2,3,1,0,5,2,0]},
+{"name":"Destructuring Assignment in CoffeeScript","data":[5,0,1,5,3,4,1,4,4,4,2,0,2,1,3,2,7,4,3,3,3,10,2,0,0,2,2,0,3,1,2,2,1,4,2,2,0,0]},
+{"name":"Lunchtime Tech Talk: Tom Dale and Yehuda Katz on Ember.js","data":[0,0,5,1,3,4,4,2,3,6,2,1,2,5,5,5,3,5,1,0,1,0,2,1,2,1,0,1,2,1,1,1,1,0,3,4,2,0]},
+{"name":"Why Your Daily Standup Sucks (and how to fix it)","data":[4,1,0,6,3,0,0,3,3,6,0,3,2,3,4,11,4,2,2,0,0,5,1,2,3,1,2,1,4,6,2,2,2,2,2,0,3,0]},
+{"name":"Stripes: A Successful First Project","data":[2,2,4,0,0,0,0,2,4,4,6,1,0,3,2,1,1,1,0,0,0,3,1,4,0,1,2,0,5,5,1,2,2,1,0,5,1,0]},
+{"name":"Compass, the 960 CSS framework, and Semantic Markup","data":[3,2,3,2,5,5,4,4,4,5,8,1,0,1,7,4,3,2,1,4,2,5,7,7,3,7,1,3,1,1,2,0,4,1,2,1,2,0]},
+{"name":"iPhone gesture recognition","data":[1,0,1,1,2,0,0,3,2,0,0,1,0,0,2,2,0,2,0,0,6,5,5,1,1,2,0,0,9,3,1,2,1,0,1,3,3,0]},
+{"name":"Generic Custom Argument Matching in EasyMock","data":[0,0,1,1,2,0,2,2,0,0,0,0,0,0,1,2,1,6,2,0,0,0,2,0,3,0,0,0,3,1,3,2,0,0,0,3,2,0]},
+{"name":"Crank Your Specs","data":[1,12,3,4,2,0,0,1,4,0,2,1,0,3,3,7,0,2,0,0,0,0,3,2,3,3,0,0,2,4,3,3,0,0,2,1,1,0]},
+{"name":"Start Testing Your Migrations. (Right Now)","data":[1,3,0,1,3,1,0,1,0,0,4,0,0,0,0,3,3,1,0,0,0,0,4,3,1,0,0,0,0,0,2,3,0,0,0,2,2,0]},
+{"name":"Loading UITableViewCells from a nib file","data":[0,2,2,3,1,0,1,3,2,2,0,5,0,0,2,3,1,4,2,0,0,3,4,2,1,1,1,1,5,4,2,0,1,0,0,3,3,0]},
+{"name":"Absolutize for jQuery","data":[0,3,0,0,0,0,3,4,3,4,4,3,0,0,1,1,1,0,0,0,0,0,2,2,4,0,0,0,5,0,3,4,1,0,0,1,0,0]},
+{"name":"Crafting Commits in Git","data":[0,2,0,2,1,0,0,1,0,1,3,0,1,0,0,1,1,1,0,0,2,0,1,0,0,1,2,0,2,2,3,0,0,0,0,2,4,0]},
+{"name":"Introducing Java DB Migrations","data":[11,4,4,0,0,0,0,3,2,0,0,0,0,0,1,8,3,3,0,0,1,1,2,1,2,7,1,0,0,2,1,0,2,0,3,0,2,0]},
+{"name":"Resizing views around the keyboard","data":[0,1,2,2,0,0,0,1,0,0,0,0,1,0,3,0,1,5,1,1,0,7,2,0,0,1,2,0,0,0,1,0,2,1,1,1,1,0]},
+{"name":"Better error handling in Ruby with rescue else","data":[1,0,1,2,0,0,0,3,3,0,5,3,1,1,1,0,4,2,3,0,0,7,4,0,1,0,0,1,0,4,1,2,0,0,2,1,1,0]},
+{"name":"Designing mobile APIs – basic behaviors","data":[0,0,0,0,1,0,0,0,1,0,1,1,1,2,3,0,0,1,0,0,0,0,1,0,0,0,0,1,0,2,2,1,1,0,0,2,1,0]},
+{"name":"Node.js Overview","data":[0,3,1,0,2,0,1,4,2,1,1,2,1,1,4,2,2,0,1,0,1,1,1,1,1,0,2,0,1,1,2,0,0,0,5,0,0,0]},
+{"name":"Configure your gem the Rails way with Railtie","data":[2,2,1,2,3,1,0,2,3,1,0,0,0,0,1,0,2,1,0,1,2,3,0,3,1,2,1,1,5,4,0,3,1,0,1,1,0,0]},
+{"name":"Jobs at Carbon Five","data":[1,0,4,2,1,0,0,4,2,0,1,1,0,0,1,3,0,0,1,1,0,1,0,0,1,0,1,0,0,1,0,2,1,0,3,0,0,0]},
+{"name":"Book Review – Cassandra: The Definitive Guide","data":[0,0,0,0,1,0,0,0,0,3,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,3,0,0,2,0,0]},
+{"name":"Parameterized REST URLs with Spring MVC","data":[0,0,0,0,0,0,0,1,1,2,2,1,0,0,0,0,1,1,0,0,1,3,2,0,1,1,0,0,0,2,2,1,0,0,0,2,1,0]},
+{"name":"Designing mobile APIs – dynamic content","data":[0,2,1,4,2,1,0,0,0,0,2,1,1,3,2,1,0,1,1,0,1,1,4,2,1,3,1,0,0,1,2,0,0,0,0,2,1,0]},
+{"name":"Visualizing Skillsets in HTML5 Canvas: Part 1","data":[0,3,0,4,0,0,0,1,0,0,2,0,3,0,3,3,0,0,4,0,1,1,1,0,0,0,0,0,4,2,0,0,0,2,2,0,1,0]},
+{"name":"Beginning Test-Driven Development in Android","data":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,1]},
+{"name":"Behavior Driven Development for node.js","data":[0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,3,0,0,2,1,0,1,0,0,0,0,0,0,0,1,1,0,0,2,0,0]},
+{"name":"Database migrations for Cassandra with ActiveColumn","data":[1,0,0,1,0,0,0,3,1,0,4,0,0,0,1,0,1,0,0,0,1,0,2,5,0,0,0,1,2,2,1,0,1,1,0,2,0,0]},
+{"name":"Test Driving Your Tests by Writing Them Backwards","data":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,3,0]},
+{"name":"Agile Modeling Techniques for Story Writing","data":[0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,2,0]},
+{"name":"Carbon Five’s Collaborative Design Workbook Remixed","data":[1,1,2,0,1,2,0,1,0,1,3,2,0,2,2,0,1,0,2,0,4,0,0,0,0,0,0,0,0,0,0,0,1,2,0,1,0,0]},
+{"name":"Why We Are an Agile Shop","data":[2,1,3,1,0,0,0,0,3,3,0,0,0,0,0,0,0,1,0,0,1,1,0,0,2,2,0,0,1,1,1,0,0,0,0,1,2,0]},
+{"name":"Display Line Numbers on Embedded Gists","data":[0,0,3,0,0,0,0,0,0,3,0,0,1,0,1,0,0,2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0]},
+{"name":"Designing mobile APIs – error handling","data":[0,3,1,0,2,1,0,0,1,0,0,0,1,1,0,1,0,1,0,0,0,0,1,0,2,0,1,0,1,2,1,1,0,0,0,1,1,0]},
+{"name":"Unit testing JavaScript with Blue Ridge","data":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0]},
+{"name":"Browser session cookies and Dalli","data":[1,1,2,0,0,0,1,1,3,1,0,2,0,3,1,1,1,0,1,0,0,2,1,2,2,1,0,0,0,1,1,1,0,0,0,0,2,0]},
+{"name":"Using RVM on TeamCity build agents","data":[2,1,1,0,1,1,0,3,1,1,0,2,0,0,2,2,2,1,6,0,2,1,3,3,1,2,0,1,1,1,1,1,0,0,0,1,1,0]},
+{"name":"Automatically deploying to Engine Yard Cloud","data":[0,0,2,0,0,0,0,0,0,1,0,0,0,0,0,0,3,0,0,0,1,0,0,1,0,0,0,0,3,0,1,1,0,0,0,1,0,0]},
+{"name":"Injecting Spring 2.5 beans into Stripes Actions","data":[0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1,0,0]},
+{"name":"World Wide Web Now Carbon Five Compliant","data":[1,1,0,0,0,0,2,0,2,0,0,0,0,0,2,0,3,0,0,0,0,0,0,0,2,0,0,0,3,0,0,0,1,0,0,0,2,0]},
+{"name":"Continuous Integration and Build Promotion","data":[1,0,0,2,0,0,0,1,0,2,1,0,1,0,0,1,1,0,0,0,0,0,1,0,1,0,2,0,1,1,0,2,1,0,0,0,0,0]},
+{"name":"Collaborative Design Workbook","data":[0,0,0,0,0,1,0,0,1,0,2,3,0,0,0,0,1,4,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0]},
+{"name":"#TODOs Never Get To-Done","data":[1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,5,0,0,1,0,0,0,1,0,0,0,1,1,0]},
+{"name":"Integrating topic branches in Git","data":[1,0,1,1,1,0,0,2,0,0,1,2,1,1,0,0,1,1,0,0,1,2,0,1,1,0,0,1,1,0,1,1,0,0,0,1,0,0]},
+{"name":"iPhone Distributed Computing Fallacy #8: the network is homogeneous","data":[0,0,0,0,0,0,1,2,4,0,1,0,1,1,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0]}
+]
+
+
+	 // shuffle data
+	 for (var i=0;i < stats.length; i++) { var j=(Math.random()*stats.length)|0,t=stats[j];stats[j]=stats[i];stats[i]=t; }
+
+	 var biggestDay = 0;
+	 stats.forEach( function(d) { 
+	  d.max = d3.max(d.data);
+	  if ( d.max > biggestDay ) biggestDay = d.max;
+	  d.data = d.data.map(function(n,i) {return {x:i,y:n}; }); 
+	 } );
+
+	 var m = stats[0].data.length,
+	    data0 = d3.layout.stack().values(function(d) { return d.data; })(stats),
+	    color = d3.interpolateRgb("#fff", "#C62400");
+	 
+	 var width = 960,
+	     height = 600,
+	     mx = m - 1,
+	     my = d3.max(data0, function(d) {
+	       return d3.max(d.data, function(d) {
+	         return d.y0 + d.y;
+	       });
+	     });
+   
+   var area = d3.svg.area()
+       .x(function(d) { return d.x * width / mx; })
+       .y0(function(d) { return 30 + height - d.y0 * height / my; })
+       .y1(function(d) { return 30 + height - (d.y + d.y0) * height / my; });
+   
+   var vis = d3.select("#chart")
+     .append("svg")
+       .attr("width", width)
+       .attr("height", height + 30);
+   vis.append('text').attr('y',20);
+
+   vis.selectAll("path")
+       .data(data0)
+     .enter().append("path")
+       .style("fill", function(d) { return color(d.max/biggestDay); })
+       .attr("d", function(d) { return area(d.data) })
+       .on('mouseover', function(d) { 
+       		this.setAttribute('class','selected'); 
+       		vis.select('text').text(d.name) 
+       	})
+       .on('mouseout', function() { 
+       		this.setAttribute('class',''); 
+       		vis.select('text').text('') 
+       	});
+
+     </script>
+  </body>
+</html>
