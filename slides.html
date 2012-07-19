@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3</title>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <style type="text/css">
+
+      svg { width: 1200px; height: 700px; margin:0 auto;}
+      circle { fill:#666; }
+      text { font-family: helvetica; font-size: 12px; color: #666; }
+      text.selected { font-size:18px; font-weight: bold; color:#333; }
+      path { fill:none; stroke: rgba(0,0,0,.5);}
+
+    </style>
+  </head>
+  <body>
+    <div id="chart"></div>
+    <script type="text/javascript">
+
+   var slides = {title:'D3', x:0, hidden_children: [
+    {title:'attributes', hidden_children: [
+      {title:'Javascript Visualization Library'},
+      {title:'Data-driven Documents'},
+      {title:'Toolkit, not a framework or application'}
+    ]},
+    {title:'Core constraints', hidden_children: [
+      {title:'The document is about a dataset'},
+      {title:'The document is DOM'},
+      {title:'data <=> dom element'}
+    ]},
+    {title:'SVG', hidden_children: [
+      {title:'SVG is surprisingly powerful'},
+      {title:'D3 makes SVG reasonable'}
+    ]},
+    {title:'D3 Visualization Tools', hidden_children:[
+      {title:'Scales'},
+      {title:'Shapes', hidden_children:[
+        {title:'line'},
+        {title:'area'},
+        {title:'arc'},
+        {title:'chord'},
+        {title:'diagonal'}
+      ]},
+      {title:'Axes'},
+      {title:'Layouts', hidden_children: [
+        {title:'Tree'},
+        {title:'Cluster / Bundle'},
+        {title:'Force'},
+        {title:'Pie'},
+        {title:'Stack'},
+      ]},
+      {title:'Geography'} 
+    ]}
+  ]}
+
+  var radius = 800 / 2;
+
+  var tree = d3.layout.tree()
+    .size([360, radius - 120])
+    .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / (a.depth || .001); });
+
+  var diagonal = d3.svg.diagonal.radial()
+    .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
+  var vis = d3.select("#chart").append("svg")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2 - 150)
+    .append("g")
+      .attr("transform", "translate(" + (200+radius) + "," + radius + ")");   
+ 
+  function update() { 
+    var nodes = tree.nodes(slides, function(d) { return d.title; });
+    var link_data = vis.selectAll("path.link")
+       .data(tree.links(nodes), function(d) { return d.target.title; })
+    link_data
+      .enter().insert("svg:path", "g")
+        .attr("class", "link")
+        .attr("d", function(d) {
+          var o = {x: d.source.x0, y: d.source.y0};
+          return diagonal({source: o, target: o});
+        })
+    link_data.exit().remove();
+
+    vis.selectAll("path.link").transition().duration(1000)
+       .attr("d", diagonal);
+
+    var node_data = vis.selectAll("g.node")
+       .data(nodes);
+    var node = node_data.enter().append("g")
+       .attr("class", "node")
+       .attr("transform", function(d) { return d.parent ? "rotate(" + (d.parent.x0 - 90) + ")translate(" + d.parent.y0 + "),rotate("+(450-d.parent.x0)+')' : ''; })
+    node_data.exit().remove();
+
+    node.append("circle")
+       .attr("r", 4.5);
+
+    node.append("text")
+       .text(function(d) { return d.title; })
+
+    vis.selectAll("g.node")
+      .transition().duration(1000)
+       .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + "),rotate("+(450-d.x)+')'; })
+
+    vis.selectAll('text').classed('selected', function(d) { return d.selected; })
+       .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+       .attr("dy", ".31em")
+       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+
+    vis.selectAll("g.node").each(function(d) {  d.x0=d.x; d.y0=d.y; })
+  }
+  update();
+
+  function deselect( node ) {
+    node.selected = false;
+    if (node.children) node.children.forEach(deselect);
+  }
+
+  function expose( node ) {
+    if ( ! node.hidden_children ) return false;
+    if ( node.children && expose(node.children[node.children.length-1]) )
+      return true;
+    if ( ! node.children || node.children.length < node.hidden_children.length ) {
+      node.children = node.children || [];
+      node.children[node.children.length] = node.hidden_children[node.children.length];
+      node.children[node.children.length-1].selected = true;
+      return true;
+    }
+    return false;
+  }
+
+  function hide( node ) {
+    if ( ! node.hidden_children ) return false;
+    if ( node.children && node.children.length > 0 ) {
+      if ( ! hide(node.children[node.children.length-1]) ) {
+        node.children.length--;
+        if (node.children.length < 1) {
+          delete node.children;
+          node.selected = true;
+        }
+      }
+      return true;
+    }
+    return false;    
+  }
+
+  document.onkeyup = function(e) { 
+    if ( e.keyCode == 39 ) { //left
+      deselect(slides);
+      expose(slides);
+      update();
+    }
+    if ( e.keyCode == 37 ) { //right
+      deselect(slides);
+      hide(slides);
+      update();
+    }
+  }
+
+
+    </script>
+  </body>
+</html>

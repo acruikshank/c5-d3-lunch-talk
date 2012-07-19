@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Solar System</title>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <style type="text/css">
+
+      svg { width: 1200px; height: 700px; margin:0 auto;}
+      ellipse.orbit { fill:none; stroke:#9cf; stroke-width:2px;}
+      ellipse.object { fill:#333; }
+      text { font-family: helvetica; font-size: 16px; color: #333;}
+
+    </style>
+  </head>
+  <body>
+    <div id="solar-system"></div>
+    <script type="text/javascript">
+
+  var objects = [
+    { body:'Sun', size:695000, distance:0 },
+    { body:'Mercury', size:2440, distance:57910 },
+    { body:'Venus', size:6052, distance:108200 },
+    { body:'Earth', size:6378, distance:149600 },
+    { body:'Mars', size:3397, distance:227940 },
+    { body:'Jupiter', size:71492, distance:778330 },
+    { body:'Saturn', size:60268, distance:1429400 },
+    { body:'Uranus', size:25559, distance:2870990 },
+    { body:'Neptune', size:24766, distance:4504300 },
+    { body:'Pluto', size:1150, distance:5913520 }
+  ]
+
+  var commaFormat = d3.format(',');
+  var units = { size:'m', distance:'kg' }
+  var keys = d3.keys(objects[0]);
+  var fantasy = false;
+
+  var ORBIT_SCALE = 60, ORBIT_START = 10, OBJECT_SCALE = .3;
+  function orbit(d) { return d.distance ? (Math.log(d.distance) - ORBIT_START) * ORBIT_SCALE : 0; }
+  function object_size(d) { return Math.pow(d.size,1/3) * OBJECT_SCALE; }
+
+  var vis = d3.select("#solar-system").append("svg").append('g').attr('transform','translate(600,350)')
+
+  function update(fantasy) {
+    var data =  objects.filter(function(d) { return fantasy || d.body != 'Pluto' });
+    function data_key(d) { return d.body; }
+
+    var orbits = vis.selectAll('ellipse.orbit').data(data, data_key);
+    orbits
+      .enter().append('ellipse').attr('cx',0).attr('cy',0).attr('rx',orbit).attr('ry',0).attr('opacity',1).classed('orbit',true)
+        .transition().duration(750).attr('ry',orbit);
+    orbits.exit().transition().duration(1000).attr('opacity',0).remove();
+
+    var bodies = vis.selectAll('ellipse.object').data(data, data_key);
+    bodies
+      .enter().append('ellipse').attr('cx',orbit).attr('cy',0).attr('rx',0).attr('ry',0).attr('opacity',1).classed('object',true)
+        .transition().duration(1500).attr('rx',object_size).attr('ry',object_size);
+    bodies.exit().transition().duration(1000).attr('opacity',0).remove();
+
+    var labels = vis.selectAll('text').data(data, data_key);
+    labels.enter().append('text').text(function(d) {return d.body;})
+      .attr('transform',function(d) {return 'translate('+(orbit(d)+6)+'),rotate(0),scale(1,0)'})
+      .transition().duration(1000)
+        .attr('transform',function(d) {return 'translate('+(orbit(d)+6)+',-'+(object_size(d)+5)+'),rotate(-90),scale(1,1)'})
+    labels.exit().transition().duration(1000)
+      .attr('transform',function(d) {return 'translate('+(orbit(d)+6)+'),rotate(0),scale(1,0)'}).remove();
+  }
+
+  update(fantasy);
+
+  document.onkeypress = function(e) { 
+    if ( e.keyCode != 32 ) return;
+    fantasy = !fantasy;
+    update(fantasy); 
+  }
+
+
+    </script>
+  </body>
+</html>
