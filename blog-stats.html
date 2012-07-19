@@ -113,7 +113,7 @@ var stats = [
 
 
 	 // shuffle data
-	 for (var i=0;i < stats.length; i++) { var j=(Math.random()*stats.length)|0,t=stats[j];stats[j]=stats[i];stats[i]=t; }
+//	 for (var i=0;i < stats.length; i++) { var j=(Math.random()*stats.length)|0,t=stats[j];stats[j]=stats[i];stats[i]=t; }
 
 	 var biggestDay = 0;
 	 stats.forEach( function(d) { 
@@ -123,7 +123,7 @@ var stats = [
 	 } );
 
 	 var m = stats[0].data.length,
-	    data0 = d3.layout.stack().values(function(d) { return d.data; })(stats),
+	    data0 = d3.layout.stack().offset('wiggle').values(function(d) { return d.data; })(stats),
 	    color = d3.interpolateRgb("#fff", "#C62400");
 	 
 	 var width = 960,
@@ -138,7 +138,8 @@ var stats = [
    var area = d3.svg.area()
        .x(function(d) { return d.x * width / mx; })
        .y0(function(d) { return 30 + height - d.y0 * height / my; })
-       .y1(function(d) { return 30 + height - (d.y + d.y0) * height / my; });
+       .y1(function(d) { return 30 + height - (d.y + d.y0) * height / my; })
+       .interpolate('basis');
    
    var vis = d3.select("#chart")
      .append("svg")
